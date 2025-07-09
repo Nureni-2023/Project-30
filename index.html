@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Login & Register System</title>
+    <!-- Google Fonts: Inter for a modern, clean typeface -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS Variables for Theming (Light and Dark Mode) --- */
+        /* These variables define the color palette for both themes, making it easy to switch. */
+        :root {
+            /* Light Mode Colors */
+            --bg-color: #e0e5ec; /* Soft light background for neomorphism base */
+            --card-bg: rgba(255, 255, 255, 0.7); /* Card background with transparency for glassmorphism */
+            --text-color: #334155; /* General text color */
+            --heading-color: #1e293b; /* Heading text color */
+            --input-bg: rgba(255, 255, 255, 0.5); /* Input background with transparency */
+            --input-border: rgba(203, 213, 225, 0.6); /* Input border with transparency */
+            --input-focus-border: #3b82f6; /* Focus border for inputs */
+            --button-bg: linear-gradient(135deg, #3b82f6, #2563eb); /* Gradient for buttons */
+            --button-hover-bg: linear-gradient(135deg, #2563eb, #1d4ed8); /* Darker gradient on hover */
+            --error-color: #ef4444; /* Error message color */
+            --success-color: #22c55e; /* Success message/icon color */
+            --shadow-light: #a3b1c6; /* Light shadow for neomorphism */
+            --shadow-dark: #ffffff; /* Dark shadow for neomorphism */
+            --password-icon-color: #64748b; /* Color for password visibility icon */
+            --link-color: #3b82f6; /* Link color */
+            --link-hover-color: #2563eb; /* Link hover color */
+
+            /* Form Switcher Colors */
+            --switcher-bg: rgba(226, 232, 240, 0.8); /* Background for the switcher tabs */
+            --switcher-button-bg: rgba(255, 255, 255, 0.9); /* Default button background */
+            --switcher-button-active-bg: linear-gradient(135deg, #3b82f6, #2563eb); /* Active button gradient */
+            --switcher-button-text: #64748b; /* Default button text */
+            --switcher-button-active-text: #ffffff; /* Active button text */
+            --switcher-button-shadow: rgba(0, 0, 0, 0.1); /* Shadow for switcher buttons */
+
+            /* Modal Colors */
+            --modal-overlay-bg: rgba(0, 0, 0, 0.7); /* Darker overlay for modal */
+            --modal-bg: #ffffff; /* Modal content background */
+            --modal-text-color: #1e293b; /* Modal text color */
+            --modal-button-bg: linear-gradient(135deg, #3b82f6, #2563eb); /* Modal button gradient */
+            --modal-button-hover-bg: linear-gradient(135deg, #2563eb, #1d4ed8); /* Modal button hover gradient */
+            --modal-icon-color: #22c55e; /* Modal success icon color */
+
+            /* Animated Background Gradient */
+            --animated-gradient-start: #a7d9f7;
+            --animated-gradient-end: #e0e5ec;
+        }
+
+        body.dark-mode {
+            /* Dark Mode Colors - Overrides for the above variables */
+            --bg-color: #2c313a;
+            --card-bg: rgba(45, 55, 72, 0.7);
+            --text-color: #e2e8f0;
+            --heading-color: #f8fafc;
+            --input-bg: rgba(74, 85, 104, 0.5);
+            --input-border: rgba(100, 116, 139, 0.6);
+            --input-focus-border: #60a5fa;
+            --button-bg: linear-gradient(135deg, #60a5fa, #3b82f6);
+            --button-hover-bg: linear-gradient(135deg, #3b82f6, #2563eb);
+            --error-color: #ef4444;
+            --success-color: #4ade80;
+            --shadow-light: #3a404a; /* Darker light shadow for dark neomorphism */
+            --shadow-dark: #1e2228; /* Lighter dark shadow for dark neomorphism */
+            --password-icon-color: #cbd5e1;
+            --link-color: #60a5fa;
+            --link-hover-color: #3b82f6;
+
+            /* Form Switcher Colors (Dark Mode) */
+            --switcher-bg: rgba(74, 85, 104, 0.8);
+            --switcher-button-bg: rgba(45, 55, 72, 0.9);
+            --switcher-button-active-bg: linear-gradient(135deg, #60a5fa, #3b82f6);
+            --switcher-button-text: #cbd5e1;
+            --switcher-button-active-text: #ffffff;
+            --switcher-button-shadow: rgba(0, 0, 0, 0.4);
+
+            /* Modal Colors (Dark Mode) */
+            --modal-overlay-bg: rgba(0, 0, 0, 0.85);
+            --modal-bg: #1e293b;
+            --modal-text-color: #e2e8f0;
+            --modal-button-bg: linear-gradient(135deg, #60a5fa, #3b82f6);
+            --modal-button-hover-bg: linear-gradient(135deg, #3b82f6, #2563eb);
+            --modal-icon-color: #4ade80;
+
+            /* Animated Background Gradient (Dark Mode) */
+            --animated-gradient-start: #3a404a;
+            --animated-gradient-end: #2c313a;
+        }
+
+        /* --- Base Styles --- */
+        * {
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif; /* Apply the Inter font */
+            background: var(--bg-color); /* Use theme background color */
+            display: flex;
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            min-height: 100vh; /* Full viewport height */
+            color: var(--text-color); /* Use theme text color */
+            transition: background 0.4s ease, color 0.4s ease; /* Smooth theme transition */
+            padding: 20px; /* Padding around the form for smaller screens */
+            overflow: hidden; /* Hide overflow to prevent scrollbars from animated background */
+            position: relative; /* For positioning animated background */
+        }
+
+        /* --- Animated Background Gradient --- */
+        /* Keyframes for subtle gradient shift */
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--animated-gradient-start), var(--animated-gradient-end));
+            background-size: 200% 200%; /* Make gradient larger than viewport for animation */
+            animation: gradient-shift 15s ease-in-out infinite;
+            z-index: -1; /* Send behind content */
+            opacity: 0.8; /* Subtle overlay */
+            transition: background 0.4s ease;
+        }
+
+        /* --- Main Container for Forms (The Card) --- */
+        .main-container {
+            background: var(--card-bg); /* Semi-transparent background for glassmorphism */
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle white border */
+            border-radius: 16px; /* More rounded corners */
+            box-shadow: 8px 8px 15px var(--shadow-light), -8px -8px 15px var(--shadow-dark); /* Neomorphism shadow */
+            width: 100%;
+            max-width: 450px; /* Slightly narrower for better mobile fit */
+            position: relative; /* For absolute positioning of forms */
+            overflow: hidden; /* Crucial for flip animation */
+            min-height: 550px; /* Ensure enough height for both forms and flip */
+            display: flex; /* Use flex to center content within the card */
+            flex-direction: column;
+            justify-content: flex-start; /* Align items to start, not center */
+            align-items: center;
+            transform-style: preserve-3d; /* Enable 3D transformations for flipping */
+            transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), /* Smooth flip transition */
+                        box-shadow 0.4s ease, background 0.4s ease, border 0.4s ease; /* Theme transitions */
+            perspective: 1000px; /* Perspective for 3D effect on the parent */
+        }
+
+        /* When the container is 'flipped', rotate it to show the back face */
+        .main-container.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* --- Theme Toggle --- */
+        .theme-toggle-wrapper {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-color); /* Use general text color */
+            z-index: 10; /* Ensure it's above forms */
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 25px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--switcher-bg); /* Matches switcher background */
+            border-radius: 25px;
+            transition: background-color 0.4s ease;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--switcher-button-bg); /* Matches switcher button color */
+            border-radius: 50%;
+            transition: transform 0.4s ease, background-color 0.4s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background: var(--switcher-button-active-bg); /* Active color for toggle track */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+            background-color: var(--switcher-button-active-text); /* White handle when active */
+        }
+
+        /* --- Heading Styling --- */
+        .main-container h1 {
+            color: var(--heading-color);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            z-index: 5; /* Ensure it's above forms during flip */
+            padding-top: 40px; /* Space for theme toggle */
+        }
+
+        /* --- Form Switcher Styling --- */
+        .form-switcher {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--switcher-bg);
+            border-radius: 10px; /* Slightly more rounded */
+            padding: 5px;
+            margin-bottom: 30px;
+            width: calc(100% - 60px); /* Take full width of container minus padding */
+            z-index: 5; /* Ensure it's above forms during flip */
+        }
+
+        .form-switcher button {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px; /* More rounded buttons */
+            background-color: var(--switcher-button-bg);
+            color: var(--switcher-button-text);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px var(--switcher-button-shadow);
+        }
+
+        .form-switcher button.active {
+            background: var(--switcher-button-active-bg); /* Gradient for active button */
+            color: var(--switcher-button-active-text);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .form-switcher button:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.7); /* Subtle hover for inactive buttons */
+        }
+        body.dark-mode .form-switcher button:hover:not(.active) {
+            background-color: rgba(45, 55, 72, 0.7);
+        }
+
+        /* --- Individual Form Wrapper Styling (For 3D Flip) --- */
+        .form-wrapper {
+            position: absolute; /* Position forms absolutely within main-container */
+            top: 190px; /* Adjusted to be below h1 and switcher */
+            left: 0;
+            width: 100%;
+            height: calc(100% - 190px); /* Take remaining height */
+            padding: 0 30px; /* Match main-container horizontal padding */
+            box-sizing: border-box; /* Include padding in width calculation */
+
+            /* 3D Flip specific properties */
+            backface-visibility: hidden; /* Hide the back face when rotated away */
+            transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1); /* Match container transition */
+            transform-style: preserve-3d; /* Needed for child elements if they also transform */
+            opacity: 1; /* Always visible for flip, opacity controlled by parent flip */
+            display: flex; /* Use flex for internal form content alignment */
+            flex-direction: column;
+            justify-content: flex-start; /* Align form content to start */
+            align-items: center;
+            will-change: transform; /* Hint to browser for animation optimization */
+        }
+
+        /* Initial state for login form (front face) */
+        #loginFormWrapper {
+            transform: rotateY(0deg);
+            z-index: 2; /* Ensure front form is on top */
+        }
+
+        /* Initial state for register form (back face, hidden) */
+        #registerFormWrapper {
+            transform: rotateY(180deg);
+            z-index: 1; /* Ensure back form is behind */
+        }
+
+        /* When main-container is flipped, swap z-index to ensure correct clickability */
+        .main-container.flipped #loginFormWrapper {
+            z-index: 1;
+            pointer-events: none; /* Disable interaction when hidden */
+        }
+        .main-container.flipped #registerFormWrapper {
+            z-index: 2;
+            pointer-events: auto; /* Enable interaction when visible */
+        }
+
+        /* --- Form Group (Label + Input + Error Message) Styling --- */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            width: 100%; /* Take full width within form-wrapper */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            outline: none;
+            /* Glassmorphism input style */
+            box-shadow: inset 2px 2px 5px var(--shadow-light), inset -5px -5px 10px var(--shadow-dark); /* Inner neomorphism shadow */
+        }
+
+        /* Input Focus State */
+        input:focus {
+            border-color: var(--input-focus-border);
+            box-shadow: inset 1px 1px 2px var(--shadow-light), inset -1px -1px 2px var(--shadow-dark), 0 0 0 3px rgba(59, 130, 246, 0.2); /* Subtle neomorphism + focus glow */
+        }
+
+        /* Input Error State */
+        input.error-state {
+            border-color: var(--error-color);
+            box-shadow: inset 2px 2px 5px var(--shadow-light), inset -5px -5px 10px var(--shadow-dark), 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Input Success State */
+        input.success-state {
+            border-color: var(--success-color);
+            box-shadow: inset 2px 2px 5px var(--shadow-light), inset -5px -5px 10px var(--shadow-dark), 0 0 0 3px rgba(34, 197, 94, 0.2);
+        }
+
+        /* --- Inline Error Message Styling --- */
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 5px;
+            height: 0; /* Initially hidden */
+            overflow: hidden;
+            opacity: 0;
+            transition: height 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        .error-message.show {
+            height: auto; /* Show content */
+            opacity: 1;
+            padding-top: 5px;
+        }
+
+        /* --- Submit Buttons and Links --- */
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--button-bg); /* Gradient background */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 4px 4px 8px var(--shadow-light), -4px -4px 8px var(--shadow-dark); /* Neomorphism button shadow */
+        }
+
+        button[type="submit"]:hover {
+            background: var(--button-hover-bg); /* Darker gradient on hover */
+            transform: translateY(-2px);
+            box-shadow: 6px 6px 12px var(--shadow-light), -6px -6px 12px var(--shadow-dark); /* More pronounced shadow on hover */
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: inset 2px 2px 5px var(--shadow-light), inset -5px -5px 10px var(--shadow-dark); /* Pressed in effect */
+        }
+
+        .form-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: var(--link-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .form-link:hover {
+            color: var(--link-hover-color);
+            text-decoration: underline;
+        }
+
+        /* --- Password Eye Icon Styling --- */
+        .password-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-input-wrapper input {
+            padding-right: 45px;
+        }
+
+        .toggle-password-visibility {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--password-icon-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-password-visibility:hover {
+            color: var(--input-focus-border);
+        }
+
+        .toggle-password-visibility svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .toggle-password-visibility .icon-show-password {
+            display: block;
+        }
+        .toggle-password-visibility .icon-hide-password {
+            display: none;
+        }
+
+        .password-input-wrapper.show-password .icon-show-password {
+            display: none;
+        }
+        .password-input-wrapper.show-password .icon-hide-password {
+            display: block;
+        }
+
+        /* --- Success Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--modal-overlay-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Highest z-index */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--modal-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.8); /* Start smaller for pop-in animation */
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease; /* Pop animation */
+            color: var(--modal-text-color);
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-icon {
+            color: var(--modal-icon-color);
+            margin-bottom: 20px;
+            /* Animated checkmark */
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .modal-icon svg {
+            width: 80px;
+            height: 80px;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--heading-color);
+        }
+
+        .modal-message {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .modal-ok-button {
+            padding: 12px 30px;
+            background: var(--modal-button-bg);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .modal-ok-button:hover {
+            background: var(--modal-button-hover-bg);
+            transform: translateY(-2px);
+        }
+
+        .modal-ok-button:active {
+            transform: translateY(0);
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .main-container {
+                padding: 30px 20px;
+                border-radius: 12px;
+                min-height: 500px; /* Adjusted min-height for mobile */
+            }
+
+            .theme-toggle-wrapper {
+                top: 15px;
+                right: 15px;
+                gap: 6px;
+                font-size: 0.8rem;
+            }
+
+            .theme-switch {
+                width: 40px;
+                height: 22px;
+            }
+
+            .slider:before {
+                height: 16px;
+                width: 16px;
+                left: 3px;
+                bottom: 3px;
+            }
+
+            input:checked + .slider:before {
+                transform: translateX(18px);
+            }
+
+            .main-container h1 {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+                padding-top: 30px; /* Adjust padding for smaller toggle */
+            }
+
+            .form-switcher {
+                margin-bottom: 25px;
+                width: calc(100% - 40px); /* Adjust width for mobile padding */
+            }
+
+            .form-switcher button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            .form-wrapper {
+                top: 120px; /* Adjusted top for mobile to fit content */
+                padding: 0 20px;
+            }
+
+            .form-group {
+                margin-bottom: 15px; /* Slightly less margin */
+            }
+
+            input {
+                padding: 10px 12px;
+                font-size: 0.95rem;
+            }
+
+            button[type="submit"] {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+
+            .password-input-wrapper input {
+                padding-right: 40px;
+            }
+
+            .toggle-password-visibility {
+                right: 10px;
+                width: 20px;
+                height: 20px;
+            }
+            .toggle-password-visibility svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            /* Modal Responsive Adjustments */
+            .modal-content {
+                padding: 30px 20px;
+            }
+            .modal-icon svg {
+                width: 60px;
+                height: 60px;
+            }
+            .modal-title {
+                font-size: 1.6rem;
+            }
+            .modal-message {
+                font-size: 0.9rem;
+            }
+            .modal-ok-button {
+                padding: 10px 25px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container" id="mainContainer">
+        <!-- Theme Toggle -->
+        <div class="theme-toggle-wrapper">
+            <span class="theme-text light-text">Light</span>
+            <label class="theme-switch">
+                <input type="checkbox" id="themeToggle">
+                <span class="slider"></span>
+            </label>
+            <span class="theme-text dark-text">Dark</span>
+        </div>
+
+        <h1>Welcome</h1>
+
+        <!-- Form Switcher Buttons -->
+        <div class="form-switcher">
+            <button id="showLoginBtn" class="active">Login</button>
+            <button id="showRegisterBtn">Register</button>
+        </div>
+
+        <!-- Login Form Wrapper (Front face of the 3D card) -->
+        <div class="form-wrapper" id="loginFormWrapper">
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="your.email@example.com" />
+                    <div class="error-message" id="loginEmailError">Enter a valid email address.</div>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="loginPassword" placeholder="********" />
+                        <!-- Data attribute links toggle button to its specific input -->
+                        <span class="toggle-password-visibility" data-target-input="loginPassword">
+                            <!-- Eye Open Icon (initially visible) -->
+                            <svg class="icon-show-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            <!-- Eye Slashed Icon (initially hidden) -->
+                            <svg class="icon-hide-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .964-3.056 3.633-5.556 6.839-6.912m-2.529-.269A9.97 9.097 0 0112 5c4.478 0 8.268 2.943 9.542 7-.472 1.493-1.282 2.875-2.274 4.085M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="error-message" id="loginPasswordError">Password is required.</div>
+                </div>
+                <button type="submit">Login</button>
+                <a href="#" class="form-link">Forgot password?</a>
+            </form>
+        </div>
+
+        <!-- Register Form Wrapper (Back face of the 3D card) -->
+        <div class="form-wrapper" id="registerFormWrapper">
+            <form id="registerForm" novalidate>
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" placeholder="John Doe" />
+                    <div class="error-message" id="fullNameError">Please enter your full name.</div>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email Address</label>
+                    <input type="email" id="registerEmail" placeholder="john.doe@example.com" />
+                    <div class="error-message" id="registerEmailError">Enter a valid email address.</div>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" placeholder="e.g., 1234567890" />
+                    <div class="error-message" id="phoneNumberError">Phone number must be 10–15 digits.</div>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="registerPassword" placeholder="********" />
+                        <span class="toggle-password-visibility" data-target-input="registerPassword">
+                            <svg class="icon-show-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            <svg class="icon-hide-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .964-3.056 3.633-5.556 6.839-6.912m-2.529-.269A9.97 9.097 0 0112 5c4.478 0 8.268 2.943 9.542 7-.472 1.493-1.282 2.875-2.274 4.085M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="error-message" id="registerPasswordError">
+                        Password must be 8+ characters, include uppercase, number & special char.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirmPassword" placeholder="********" />
+                        <span class="toggle-password-visibility" data-target-input="confirmPassword">
+                            <svg class="icon-show-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            <svg class="icon-hide-password" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .964-3.056 3.633-5.556 6.839-6.912m-2.529-.269A9.97 9.097 0 0112 5c4.478 0 8.268 2.943 9.542 7-.472 1.493-1.282 2.875-2.274 4.085M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="error-message" id="confirmPasswordError">Passwords do not match.</div>
+                </div>
+                <button type="submit">Register</button>
+                <a href="#" class="form-link" id="alreadyAccountLink">Already have an account?</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal: Appears only upon successful form submission -->
+    <div class="modal-overlay" id="successModalOverlay">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <!-- Checkmark Icon SVG -->
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <div class="modal-title" id="modalTitle"></div>
+            <div class="modal-message" id="modalMessage"></div>
+            <button class="modal-ok-button" id="modalOkButton">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM Element References ---
+        const mainContainer = document.getElementById('mainContainer');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const showRegisterBtn = document.getElementById('showRegisterBtn');
+        const loginFormWrapper = document.getElementById('loginFormWrapper');
+        const registerFormWrapper = document.getElementById('registerFormWrapper');
+
+        // Login Form Elements
+        const loginForm = document.getElementById('loginForm');
+        const loginEmailInput = document.getElementById('loginEmail');
+        const loginPasswordInput = document.getElementById('loginPassword');
+        const loginEmailError = document.getElementById('loginEmailError');
+        const loginPasswordError = document.getElementById('loginPasswordError');
+        const forgotPasswordLink = document.querySelector('.form-link'); // "Forgot password?" link
+
+        // Register Form Elements
+        const registerForm = document.getElementById("registerForm");
+        const fullNameInput = document.getElementById("fullName");
+        const registerEmailInput = document.getElementById("registerEmail");
+        const phoneNumberInput = document.getElementById("phoneNumber");
+        const registerPasswordInput = document.getElementById("registerPassword");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
+        const fullNameError = document.getElementById("fullNameError");
+        const registerEmailError = document.getElementById("registerEmailError");
+        const phoneNumberError = document.getElementById("phoneNumberError");
+        const registerPasswordError = document.getElementById("registerPasswordError");
+        const confirmPasswordError = document.getElementById("confirmPasswordError");
+        const alreadyAccountLink = document.getElementById('alreadyAccountLink'); // "Already have an account?" link
+
+        // Modal Elements
+        const successModalOverlay = document.getElementById('successModalOverlay');
+        const modalOkButton = document.getElementById('modalOkButton');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+
+        // Theme Toggle Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Password Visibility Toggle Buttons (select all of them)
+        const togglePasswordVisibilityButtons = document.querySelectorAll('.toggle-password-visibility');
+
+        // --- Validation Helper Function ---
+
+        /**
+         * Validates an input field and displays/hides its error message and styling.
+         * @param {HTMLElement} inputElement - The input field element.
+         * @param {HTMLElement} errorElement - The div element for the error message.
+         * @param {boolean} isValid - The boolean result of the validation check.
+         * @param {string} errorMessageText - The specific error message to display if not valid.
+         * @returns {boolean} - Returns the isValid status.
+         */
+        const validateInput = (inputElement, errorElement, isValid, errorMessageText) => {
+            if (!isValid) {
+                errorElement.textContent = errorMessageText;
+                errorElement.classList.add("show");
+                inputElement.classList.add("error-state");
+                inputElement.classList.remove("success-state");
+            } else {
+                errorElement.textContent = "";
+                errorElement.classList.remove("show");
+                inputElement.classList.remove("error-state");
+                inputElement.classList.add("success-state");
+            }
+            return isValid; // Return validation result
+        };
+
+        // --- Specific Field Validators ---
+        const validators = {
+            // Login Form Validators
+            loginEmail: (value) => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(value) && value.trim().length > 0;
+            },
+            loginPassword: (value) => value.length > 0, // Password is just required for login
+
+            // Register Form Validators
+            fullName: (value) => value.trim().length >= 2,
+            registerEmail: (value) => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(value) && value.trim().length > 0;
+            },
+            phoneNumber: (value) => /^\d{10,15}$/.test(value), // Ensures only digits and length 10-15
+            registerPassword: (value) => /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(value), // Uppercase, number, special char, 8+ length
+            confirmPassword: (value) => value === registerPasswordInput.value && value.length > 0, // Must match password and not be empty
+        };
+
+        // --- Form Switching Logic (3D Flip Effect) ---
+
+        /**
+         * Switches the active form displayed on the page with a 3D flip animation.
+         * @param {string} formType - The type of form to show ('login' or 'register').
+         */
+        function switchForm(formType) {
+            // Reset all forms and clear errors before switching
+            loginForm.reset();
+            registerForm.reset();
+            clearAllFormErrors();
+            resetPasswordInputTypes(); // Ensure password fields are reset to hidden
+
+            if (formType === 'login') {
+                mainContainer.classList.remove('flipped'); // Flip to front (login)
+                showLoginBtn.classList.add('active');
+                showRegisterBtn.classList.remove('active');
+            } else { // formType === 'register'
+                mainContainer.classList.add('flipped'); // Flip to back (register)
+                showRegisterBtn.classList.add('active');
+                showLoginBtn.classList.remove('active');
+            }
+        }
+
+        /**
+         * Clears all error and success states from inputs across both forms.
+         */
+        function clearAllFormErrors() {
+            const allInputs = mainContainer.querySelectorAll('input');
+            const allErrorMessages = mainContainer.querySelectorAll('.error-message');
+
+            allInputs.forEach(input => {
+                input.classList.remove('error-state', 'success-state');
+            });
+            allErrorMessages.forEach(error => {
+                error.textContent = '';
+                error.classList.remove('show');
+            });
+        }
+
+        /**
+         * Resets all password input fields to type 'password' and ensures their
+         * corresponding eye icons show the "show password" state (eye open).
+         */
+        function resetPasswordInputTypes() {
+            // Get all password inputs that might be currently text type
+            const allPasswordInputs = mainContainer.querySelectorAll('input[type="text"][id$="Password"]');
+            allPasswordInputs.forEach(input => {
+                input.type = 'password';
+                const wrapper = input.closest('.password-input-wrapper');
+                if (wrapper) {
+                    wrapper.classList.remove('show-password'); // Ensure eye icon is 'show password'
+                }
+            });
+        }
+
+        // --- Event Listeners for Form Switching Buttons ---
+        showLoginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchForm('login');
+        });
+        showRegisterBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchForm('register');
+        });
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // In a real application, this would typically open a password reset modal or navigate to a dedicated page.
+            modalTitle.textContent = "Forgot Password?";
+            modalMessage.textContent = "Please contact support or check your email for reset instructions.";
+            successModalOverlay.classList.add("show");
+        });
+        alreadyAccountLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchForm('login');
+        });
+
+
+        // --- Real-time Validation Event Listeners ---
+
+        // Login Form Inputs (on blur and input)
+        loginEmailInput.addEventListener('blur', () => validateInput(loginEmailInput, loginEmailError, validators.loginEmail(loginEmailInput.value), "Enter a valid email address."));
+        loginPasswordInput.addEventListener('blur', () => validateInput(loginPasswordInput, loginPasswordError, validators.loginPassword(loginPasswordInput.value), "Password is required."));
+
+        loginEmailInput.addEventListener('input', () => {
+            // Only validate if user has started typing to avoid showing errors on empty fields initially
+            if (loginEmailInput.value.length > 0) {
+                validateInput(loginEmailInput, loginEmailError, validators.loginEmail(loginEmailInput.value), "Enter a valid email address.");
+            } else { // If input becomes empty, clear error
+                validateInput(loginEmailInput, loginEmailError, false, "Enter a valid email address."); // Show error for empty
+            }
+        });
+        loginPasswordInput.addEventListener('input', () => {
+            if (loginPasswordInput.value.length > 0) {
+                validateInput(loginPasswordInput, loginPasswordError, validators.loginPassword(loginPasswordInput.value), "Password is required.");
+            } else {
+                validateInput(loginPasswordInput, loginPasswordError, false, "Password is required."); // Show error for empty
+            }
+        });
+
+        // Register Form Inputs (on blur and input)
+        fullNameInput.addEventListener('blur', () => validateInput(fullNameInput, fullNameError, validators.fullName(fullNameInput.value), "Please enter your full name."));
+        registerEmailInput.addEventListener('blur', () => validateInput(registerEmailInput, registerEmailError, validators.registerEmail(registerEmailInput.value), "Enter a valid email address."));
+        phoneNumberInput.addEventListener('blur', () => validateInput(phoneNumberInput, phoneNumberError, validators.phoneNumber(phoneNumberInput.value), "Phone number must be 10–15 digits."));
+        registerPasswordInput.addEventListener('blur', () => validateInput(registerPasswordInput, registerPasswordError, validators.registerPassword(registerPasswordInput.value), "Password must be 8+ characters, include uppercase, number & special char."));
+        confirmPasswordInput.addEventListener('blur', () => validateInput(confirmPasswordInput, confirmPasswordError, validators.confirmPassword(confirmPasswordInput.value), "Passwords do not match."));
+
+        fullNameInput.addEventListener('input', () => {
+            if (fullNameInput.value.length > 0) {
+                validateInput(fullNameInput, fullNameError, validators.fullName(fullNameInput.value), "Please enter your full name.");
+            } else {
+                validateInput(fullNameInput, fullNameError, false, "Please enter your full name.");
+            }
+        });
+        registerEmailInput.addEventListener('input', () => {
+            if (registerEmailInput.value.length > 0) {
+                validateInput(registerEmailInput, registerEmailError, validators.registerEmail(registerEmailInput.value), "Enter a valid email address.");
+            } else {
+                validateInput(registerEmailInput, registerEmailError, false, "Enter a valid email address.");
+            }
+        });
+        phoneNumberInput.addEventListener('input', () => {
+            if (phoneNumberInput.value.length > 0) {
+                validateInput(phoneNumberInput, phoneNumberError, validators.phoneNumber(phoneNumberInput.value), "Phone number must be 10–15 digits.");
+            } else {
+                validateInput(phoneNumberInput, phoneNumberError, false, "Phone number must be 10–15 digits.");
+            }
+        });
+        registerPasswordInput.addEventListener('input', () => {
+            if (registerPasswordInput.value.length > 0) {
+                validateInput(registerPasswordInput, registerPasswordError, validators.registerPassword(registerPasswordInput.value), "Password must be 8+ characters, include uppercase, number & special char.");
+            } else {
+                validateInput(registerPasswordInput, registerPasswordError, false, "Password must be 8+ characters, include uppercase, number & special char.");
+            }
+            // Also re-validate confirm password when main password changes
+            if (confirmPasswordInput.value.length > 0) {
+                validateInput(confirmPasswordInput, confirmPasswordError, validators.confirmPassword(confirmPasswordInput.value), "Passwords do not match.");
+            }
+        });
+        confirmPasswordInput.addEventListener('input', () => {
+            if (confirmPasswordInput.value.length > 0) {
+                validateInput(confirmPasswordInput, confirmPasswordError, validators.confirmPassword(confirmPasswordInput.value), "Passwords do not match.");
+            } else {
+                validateInput(confirmPasswordInput, confirmPasswordError, false, "Passwords do not match.");
+            }
+        });
+
+
+        // --- Form Submission Handlers ---
+
+        // Register Form Submission
+        registerForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            // Run all validations for the register form
+            const isFullNameValid = validateInput(fullNameInput, fullNameError, validators.fullName(fullNameInput.value), "Please enter your full name.");
+            const isRegisterEmailValid = validateInput(registerEmailInput, registerEmailError, validators.registerEmail(registerEmailInput.value), "Enter a valid email address.");
+            const isPhoneNumberValid = validateInput(phoneNumberInput, phoneNumberError, validators.phoneNumber(phoneNumberInput.value), "Phone number must be 10–15 digits.");
+            const isRegisterPasswordValid = validateInput(registerPasswordInput, registerPasswordError, validators.registerPassword(registerPasswordInput.value), "Password must be 8+ characters, include uppercase, number & special char.");
+            const isConfirmPasswordValid = validateInput(confirmPasswordInput, confirmPasswordError, validators.confirmPassword(confirmPasswordInput.value), "Passwords do not match.");
+
+            // If ALL fields are valid, show the success modal
+            if (isFullNameValid && isRegisterEmailValid && isPhoneNumberValid && isRegisterPasswordValid && isConfirmPasswordValid) {
+                modalTitle.textContent = "Registration Successful!";
+                modalMessage.textContent = "Your account has been created. Welcome!";
+                successModalOverlay.classList.add("show");
+                registerForm.reset(); // Clear the form fields
+                clearAllFormErrors(); // Clear all validation states and styling
+                resetPasswordInputTypes(); // Ensure password fields are reset to hidden
+            }
+        });
+
+        // Login Form Submission
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            // Run all validations for the login form
+            const isLoginEmailValid = validateInput(loginEmailInput, loginEmailError, validators.loginEmail(loginEmailInput.value), "Please enter a valid email address.");
+            const isLoginPasswordValid = validateInput(loginPasswordInput, loginPasswordError, validators.loginPassword(loginPasswordInput.value), "Password is required.");
+
+            if (isLoginEmailValid && isLoginPasswordValid) {
+                // Simulate a successful login (in a real app, you'd send data to a server)
+                modalTitle.textContent = "Login Successful!";
+                modalMessage.textContent = "Welcome back! You have successfully logged in.";
+                successModalOverlay.classList.add("show");
+                loginForm.reset(); // Clear the form fields
+                clearAllFormErrors(); // Clear all validation states and styling
+                resetPasswordInputTypes(); // Ensure password fields are reset to hidden
+            }
+        });
+
+        // --- Password Visibility Toggle Logic (Unified for all password fields) ---
+        togglePasswordVisibilityButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                // Find the input associated with this toggle button using data-target-input
+                const targetInputId = event.currentTarget.getAttribute('data-target-input');
+                const targetInput = document.getElementById(targetInputId);
+                const targetWrapper = event.currentTarget.closest('.password-input-wrapper');
+
+                const isPasswordVisible = targetInput.getAttribute('type') === 'text';
+
+                if (isPasswordVisible) {
+                    targetInput.setAttribute('type', 'password');
+                    targetWrapper.classList.remove('show-password'); // Hide slashed eye
+                } else {
+                    targetInput.setAttribute('type', 'text');
+                    targetWrapper.classList.add('show-password'); // Show slashed eye
+                }
+            });
+        });
+
+        // --- Modal Close Logic ---
+        modalOkButton.addEventListener('click', () => {
+            successModalOverlay.classList.remove('show'); // Hide the success modal when OK is clicked
+        });
+
+        // --- Theme Toggle Logic ---
+        /**
+         * Applies the saved theme preference from local storage or defaults to 'light'.
+         * This function runs once when the page loads.
+         */
+        function applyThemePreference() {
+            const savedTheme = localStorage.getItem('theme'); // Get saved theme from local storage
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode'); // Add dark-mode class to body
+                themeToggle.checked = true; // Set toggle switch to checked (dark)
+            } else {
+                body.classList.remove('dark-mode'); // Ensure dark-mode class is removed
+                themeToggle.checked = false; // Set toggle switch to unchecked (light)
+            }
+        }
+
+        /**
+         * Event listener for the theme toggle switch.
+         * Toggles the 'dark-mode' class on the body and saves the preference to local storage.
+         */
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark'); // Save 'dark' preference
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light'); // Save 'light' preference
+            }
+        });
+
+        // --- Initial Setup on Page Load ---
+        applyThemePreference(); // Apply the saved theme when the page first loads
+        // The initial state (login form visible) is handled purely by CSS
+        // as loginFormWrapper is initially at rotateY(0deg) and registerFormWrapper at rotateY(180deg).
+    </script>
+</body>
+</html>
